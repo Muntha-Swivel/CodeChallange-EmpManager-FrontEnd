@@ -4,8 +4,8 @@ function TableHead({ columns }: IColumns) {
   return (
     <thead>
       <tr>
-        {columns.map((header) => (
-          <th>{header.label}</th>
+        {columns?.map((header) => (
+          <th key={header.accessor}>{header.label}</th>
         ))}
       </tr>
     </thead>

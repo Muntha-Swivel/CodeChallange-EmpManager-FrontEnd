@@ -6,9 +6,10 @@ import { userAgent } from "next/server";
 import axios from "axios";
 import { IEmployee } from "../Shared/Interfaces/EmployeeInterface";
 import { stat } from "fs";
+import { Modal } from "react-bootstrap";
 
 const employee: IEmployee = {
-  id: "",
+  _id: "",
   firstName: "",
   lastName: "",
   email: "",
@@ -18,20 +19,29 @@ const employee: IEmployee = {
 };
 
 export const emplyeeSlice = createSlice({
-  name: "subject",
+  name: "employee",
 
-  initialState: { title: "", posts: [], user: employee } as any,
+  initialState: { posts: [], user: employee, modal: false } as any,
   //initialState: {} as any,
 
   reducers: {
-    updateName: (state, action) => {
-      return action.payload;
-    },
     updatePosts: (state, action) => {
-      return action.payload;
+      return {
+        ...state,
+        ...action.payload,
+      };
     },
     setUser: (state, action) => {
-      return action.payload;
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    removeEmployee: (state, action) => {
+      return {
+        ...state,
+        ...action.payload,
+      };
     },
   },
 
@@ -40,13 +50,12 @@ export const emplyeeSlice = createSlice({
       console.log("HYDRATE", state, action.payload);
       return {
         ...state,
-        ...action.payload.subject,
+        ...action.payload.employee,
       };
     },
   },
 });
 
-export const { updateName } = emplyeeSlice.actions;
 export default emplyeeSlice;
 
 export type AppStore = ReturnType<typeof makeStore>;
@@ -58,22 +67,20 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action
 >;
 
-export const fetchEmployees =
-  (name: any): AppThunk =>
-  async (dispatch) => {
-    const res = await fetch("http://192.168.1.26:5000/employee");
-    const json = await res.json();
+export const fetchEmployees = (): AppThunk => async (dispatch) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}employee`);
+  const json = await res.json();
 
-    dispatch(
-      emplyeeSlice.actions.updatePosts({
-        posts: json,
-      })
-    );
-  };
+  dispatch(
+    emplyeeSlice.actions.updatePosts({
+      posts: json,
+    })
+  );
+};
 
 export const addUser =
   (user: any): AppThunk =>
-  async (dispatch) => {
+  async () => {
     const newUser = {
       firstName: user.firstName,
       lastName: user.lastName,
@@ -84,10 +91,53 @@ export const addUser =
     };
     try {
       const res = await axios.post(
-        "http://192.168.1.26:5000/employee",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}employee`,
         newUser
       );
       console.log(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+export const editUser =
+  (user: any): AppThunk =>
+  async () => {
+    const newUser = {
+      empId: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phone,
+      gender: user.gender,
+      photo: "https://randomuser.me/api/portraits/men/11.jpg",
+    };
+
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}employee/update`,
+        newUser
+      );
+      console.log(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+export const removeEmployee =
+  (id: any): AppThunk =>
+  async (dispatch) => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}employee/removeEmployee/${id}`
+      );
+      const json = await res.json();
+
+      dispatch(
+        emplyeeSlice.actions.removeEmployee({
+          posts: json,
+        })
+      );
     } catch (err) {
       console.log(err);
     }
@@ -97,12 +147,13 @@ export const setUser =
   (id: any): AppThunk =>
   async (dispatch) => {
     try {
-      const res = await axios.get(
-        `http://192.168.1.26:5000/employee/getEmployee/${id}`
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}employee/getEmployee/${id}`
       );
+      const json = await res.json();
       dispatch(
         emplyeeSlice.actions.setUser({
-          user: res.data,
+          user: json,
         })
       );
     } catch (err) {
@@ -112,19 +163,3 @@ export const setUser =
 
 export const employeeSelector = () => (state: AppState) =>
   state?.[emplyeeSlice.name];
-
-// const newPost = {
-//     userId: 1,
-//     title: 'A new post',
-//     body: 'This is the body of the new post'
-// };
-
-// const sendPostRequest = async () => {
-//     try {
-//         const resp = await axios.post('https://jsonplaceholder.typicode.com/posts', newPost);
-//         console.log(resp.data);
-//     } catch (err) {
-//         // Handle Error Here
-//         console.error(err);
-//     }
-// };

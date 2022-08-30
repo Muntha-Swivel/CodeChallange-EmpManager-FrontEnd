@@ -5,6 +5,7 @@ import { setUser } from "../../../Store/employeeSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { employeeSelector } from "../../../Store/employeeSlice";
 import { wrapper } from "../../../Store/store";
+import EmployeeForm from "../../../Components/Form/AddUserForm/EmployeeForm";
 
 const EditEmployee: NextPage = () => {
   const dispatch = useDispatch();
@@ -12,45 +13,19 @@ const EditEmployee: NextPage = () => {
 
   const { id } = router.query;
 
-  return <div>Employee id {id}</div>;
+  return <EmployeeForm edit={true} />;
 };
 
 export default EditEmployee;
 
-// export const getServerSideProps = (context) => {
-//   const id = context.params.id;
-
-//   console.log(id);
-
-//   return {
-//     props: {
-//       id: "hello",
-//     },
-//   };
-// };
-
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (context) => {
-    console.log(context.params.id);
-    const id = context.params.id;
+    const id = context.params?.id;
 
     await store.dispatch(setUser(id));
+
+    return {
+      props: {},
+    };
   }
 );
-
-// const ages = [32, 33, 16, 40];
-// const result = ages.filter(checkAdult);
-
-// function checkAdult(age) {
-//   return age >= 18;
-// }
-
-// const user = {
-//   firstName: "Muntha",
-//   lastName: "Rodriguez",
-//   email: "Darrin_Rippin@gmail.com",
-//   number: "+94771277218",
-//   gender: "M",
-//   id: "1",
-//   photo: "https://randomuser.me/api/portraits/men/92.jpg",
-// };

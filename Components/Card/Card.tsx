@@ -15,7 +15,8 @@ function UserCard({
   phone,
   gender,
   photo,
-  id,
+  _id,
+  onClickDelete,
 }: IEmployee) {
   const deleteIcon = <DeleteIcon />;
   const addUserIcon = <AddUserIcon />;
@@ -25,9 +26,9 @@ function UserCard({
         <Card.Img variant="top" src={photo} />
         <Card.Body>
           <Card.Title>{firstName}</Card.Title>
-          <Card.Text>{id}</Card.Text>
+          <Card.Text>{_id}</Card.Text>
           <div className={styles.btnContainer}>
-            <Link href={`edit/${id}`} passHref>
+            <Link href={`edit/${_id}`} passHref>
               <IconButton
                 icon={addUserIcon}
                 btnStyle={{ backgroundColor: "red" }}
@@ -35,12 +36,11 @@ function UserCard({
             </Link>
           </div>
           <div className={styles.btnContainer} style={{ marginRight: 5 }}>
-            <Link href="/about" passHref>
-              <IconButton
-                icon={deleteIcon}
-                btnStyle={{ backgroundColor: "aqua" }}
-              />
-            </Link>
+            <IconButton
+              icon={deleteIcon}
+              btnStyle={{ backgroundColor: "aqua" }}
+              onClick={onClickDelete}
+            />
           </div>
         </Card.Body>
       </Card>

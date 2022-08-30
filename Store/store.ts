@@ -1,30 +1,26 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import subject from "./employeeSlice";
 import { createWrapper } from "next-redux-wrapper";
-import subjectSlice from "./employeeSlice";
-
-// const combinedReducers = combineReducers({
-//   todoReducer,
-// });
-
-// export const makeStore: any = () => {
-//   configureStore({
-//     reducer: combinedReducers,
-//   });
-// };
-
-// reducer: {
-
-//     [subjectSlice.name]: subjectSlice.reducer,
+import employeeSlice from "./employeeSlice";
+import modalSlice from "./modalSlice";
 
 export const makeStore = () =>
   configureStore({
     reducer: {
-      [subjectSlice.name]: subjectSlice.reducer,
+      [employeeSlice.name]: employeeSlice.reducer,
+      [modalSlice.name]: modalSlice.reducer,
     },
     devTools: true,
   });
 
+const store = () =>
+  configureStore({
+    reducer: {
+      [employeeSlice.name]: employeeSlice.reducer,
+      [modalSlice.name]: modalSlice.reducer,
+    },
+    devTools: true,
+  });
+export const test = makeStore();
 export const wrapper = createWrapper(makeStore);
 
 // The store now has redux-thunk added and the Redux DevTools Extension is turned on

@@ -1,14 +1,17 @@
-import React from "react";
-import {ITableBody} from './TableBodyInterface'
+import React, { Key } from "react";
+import { ITableBody } from "./TableBodyInterface";
+import { IEmployee } from "../../../Shared/Interfaces/EmployeeInterface";
 
 function TableBody({ tableData, columns }: ITableBody) {
   return (
     <tbody>
-      {tableData.map((tableData) => (
-        <tr>
+      {tableData?.map((tableData) => (
+        <tr key={tableData._id}>
           {columns.map(({ accessor }) => {
-            const tData = tableData[accessor] ? tableData[accessor] : "__";
-            return <td>{tData}</td>;
+            const tData = tableData[accessor as keyof IEmployee]
+              ? tableData[accessor as keyof IEmployee]
+              : "__";
+            return <td key={tableData._id}>{tData}</td>;
           })}
         </tr>
       ))}
@@ -17,6 +20,3 @@ function TableBody({ tableData, columns }: ITableBody) {
 }
 
 export default TableBody;
-
-//tabledata obj []
-//accessor
