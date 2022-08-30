@@ -87,7 +87,7 @@ export const addUser =
       email: user.email,
       phone: user.phone,
       gender: user.gender,
-      photo: "https://randomuser.me/api/portraits/men/11.jpg",
+      photo: "https://randomuser.me/api/portraits/men/50.jpg",
     };
     try {
       const res = await axios.post(

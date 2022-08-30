@@ -3,27 +3,19 @@ import { Formik, Form, Field } from "formik";
 import Button from "react-bootstrap/Button";
 import { default as BForm } from "react-bootstrap/Form";
 import userSchema from "../../../Validation/UserValidation";
-import { addUser } from "../../../Store/employeeSlice";
-import { editUser } from "../../../Store/employeeSlice";
+import { add, update } from "./logic";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { employeeSelector } from "../../../Store/employeeSlice";
 import { AppThunk } from "../../../Store/employeeSlice";
 import { IEmployeeForm } from "./EmployeeFormInterface";
 import FormContainer from "../../FormContainer/FormContainer";
-import { IEmployee } from "../../../Shared/Interfaces/EmployeeInterface";
+import styles from "../Form.module.css";
+import PrimaryButton from "../../Button/PrimaryButton/PrimaryButton";
 function EmployeeForm({ edit }: IEmployeeForm) {
   const dispatch: any = useDispatch();
   const content = useSelector(employeeSelector());
   const user = content.user.employee;
-
-  const add = async (user: IEmployee) => {
-    dispatch(addUser(user));
-  };
-
-  const update = async (user: IEmployee) => {
-    dispatch(editUser(user));
-  };
 
   const initialValuesEdit = {
     id: user ? user._id : "",
@@ -45,21 +37,21 @@ function EmployeeForm({ edit }: IEmployeeForm) {
 
   return (
     <FormContainer>
-      <h1>Signup</h1>
+      <h1>{edit ? "Edit Employee" : "Add Employee"}</h1>
       <Formik
         initialValues={edit ? initialValuesEdit : initialValuesAdd}
         validationSchema={userSchema}
         onSubmit={(values) => {
           console.log(values);
           if (edit == true) {
-            update(values);
+            update(values, dispatch);
           } else {
-            add(values);
+            add(values, dispatch);
           }
         }}
         enableReinitialize={true}
       >
-        {({ errors, touched, handleChange, values }) => (
+        {({ errors, touched, handleChange, values, handleSubmit }) => (
           <Form>
             {edit ? (
               <BForm.Group className="mb-3" controlId="BFormBasicEmail">
@@ -83,6 +75,7 @@ function EmployeeForm({ edit }: IEmployeeForm) {
                 placeholder="First Name"
                 onChange={handleChange}
                 value={values.firstName}
+                className={errors.firstName ? styles.invalid : ""}
               />
               {errors.firstName && touched.firstName ? (
                 <div>{errors.firstName}</div>
@@ -95,6 +88,7 @@ function EmployeeForm({ edit }: IEmployeeForm) {
                 placeholder="Last Name"
                 onChange={handleChange}
                 value={values.lastName}
+                className={errors.lastName ? styles.invalid : ""}
               />
               {errors.lastName && touched.lastName ? (
                 <div>{errors.lastName}</div>
@@ -108,6 +102,7 @@ function EmployeeForm({ edit }: IEmployeeForm) {
                 onChange={handleChange}
                 type="email"
                 value={values.email}
+                className={errors.email ? styles.invalid : ""}
               />
               {errors.email && touched.email ? <div>{errors.email}</div> : null}
             </BForm.Group>
@@ -118,6 +113,7 @@ function EmployeeForm({ edit }: IEmployeeForm) {
                 placeholder="Phone"
                 onChange={handleChange}
                 value={values.phone}
+                className={errors.phone ? styles.invalid : ""}
               />
               {errors.phone && touched.phone ? <div>{errors.phone}</div> : null}
             </BForm.Group>
@@ -128,6 +124,7 @@ function EmployeeForm({ edit }: IEmployeeForm) {
                 name="gender"
                 onChange={handleChange}
                 value={values.gender}
+                className={errors.gender ? styles.invalid : ""}
               >
                 <option value="M">Male</option>
                 <option value="F">Female</option>
@@ -136,7 +133,12 @@ function EmployeeForm({ edit }: IEmployeeForm) {
                 <div>{errors.gender}</div>
               ) : null}
             </BForm.Group>
-            <Button type="submit">{edit ? "Update" : "Add User"}</Button>
+            {/* <Button type="submit">{edit ? "Update" : "Add User"}</Button> */}
+            <PrimaryButton
+              text={edit ? "Update" : "Login"}
+              onClick={handleSubmit}
+              solid={false}
+            />
           </Form>
         )}
       </Formik>

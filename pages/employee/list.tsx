@@ -14,6 +14,7 @@ import GridIcon from "../../Components/Icons/Grid";
 import ListIcon from "../../Components/Icons/List";
 import Modal from "../../Components/Modal/Modal";
 import { removeEmployee } from "../../Store/employeeSlice";
+import Header from "../../Components/Header/Header";
 const About: NextPage = () => {
   const content = useSelector(employeeSelector());
   const posts = content.posts.employees;
@@ -31,7 +32,6 @@ const About: NextPage = () => {
   ];
 
   const dispatch = useDispatch();
-  const icon = gridView ? <GridIcon /> : <ListIcon />;
 
   const deleteEmployee = () => {
     dispatch(removeEmployee(user._id));
@@ -44,13 +44,8 @@ const About: NextPage = () => {
           header="Remove Employee"
           message="Are your sure you want to remove this employee?"
         />
-        <Col md={3}>
-          <IconButton
-            icon={icon}
-            btnStyle={{ backgroundColor: "blue" }}
-            onClick={() => setGridView(!gridView)}
-          />
-          {/* <Button variant="primary">Add Employee</Button> */}
+        <Col md={12}>
+          <Header grid={gridView} onClick={() => setGridView(!gridView)} />
         </Col>
       </Row>
 
