@@ -31,7 +31,7 @@ const About: NextPage = () => {
     { label: "Gender", accessor: "gender" },
   ];
 
-  const dispatch = useDispatch();
+  const dispatch: any = useDispatch();
 
   const deleteEmployee = () => {
     dispatch(removeEmployee(user._id));
