@@ -12,14 +12,7 @@ export const makeStore = () =>
     devTools: true,
   });
 
-const store = () =>
-  configureStore({
-    reducer: {
-      [employeeSlice.name]: employeeSlice.reducer,
-      [modalSlice.name]: modalSlice.reducer,
-    },
-    devTools: true,
-  });
+
 export const test = makeStore();
 export const wrapper = createWrapper(makeStore);
 
